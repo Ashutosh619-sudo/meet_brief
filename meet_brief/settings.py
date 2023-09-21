@@ -45,6 +45,7 @@ INSTALLED_APPS = [
     'authapp',
     'rest_framework',
     'rest_framework.authtoken',
+    'briefapp',
 ]
 
 MIDDLEWARE = [
