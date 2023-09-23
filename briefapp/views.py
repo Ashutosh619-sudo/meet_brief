@@ -5,16 +5,16 @@ from rest_framework.permissions import IsAuthenticated
 from rest_framework.response import Response
 from rest_framework import generics
 from rest_framework import status
-from .serializers import FileUploadSerializer
+from .serializers import FileUploadSerializer, CaptionSerializer
 import boto3
 import os
 
-from .models import Meeting
+from .models import Meeting, Caption
 from .serializers import MeetingSerializer
 
 from .permissions import IsObjectCreator
 
-class DownUpCaption(APIView):
+class Caption(generics.CreateAPIView):
 
     parser_classes = (MultiPartParser,)
     authentication_classes = (TokenAuthentication,)
@@ -34,6 +34,10 @@ class DownUpCaption(APIView):
 
         file_serializer = FileUploadSerializer(data=request.data)
 
+
+        caption_data = {}
+        caption_data['meeting'] = request.data["meeting"]
+
         if file_serializer.is_valid():
 
             uploaded_file = request.FILES['file']
@@ -47,7 +51,15 @@ class DownUpCaption(APIView):
 
             try:
                 s3.upload_fileobj(uploaded_file, bucket_name, object_key)
+                caption_data['object_key'] = object_key
+                caption_data['file_name'] = uploaded_file.name
+
+                serializer = CaptionSerializer(data=caption_data)
+                if serializer.is_valid(raise_exception=True):
+                    serializer.save()
+
                 return Response({'detail': 'File uploaded successfully.'}, status=status.HTTP_201_CREATED)
+            
             except Exception as e:
                 return Response({'detail': 'Failed to upload the file to S3.', 'error': str(e)}, status=status.HTTP_500_INTERNAL_SERVER_ERROR)
         
@@ -68,8 +80,7 @@ class MeetingsListCreate(generics.ListCreateAPIView):
 class MeetingsRetreiveUpdate(generics.RetrieveUpdateAPIView):
 
     authentication_classes = (TokenAuthentication,)
-    permission_classes = [IsAuthenticated]
-    permission_classes = [IsObjectCreator]
+    permission_classes = [IsAuthenticated, IsObjectCreator]
 
     serializer_class = MeetingSerializer
 

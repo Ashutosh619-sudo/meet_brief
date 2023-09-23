@@ -7,14 +7,17 @@ class FileUploadSerializer(serializers.Serializer):
     file = serializers.FileField()
 
 
-class MeetingSerializer(serializers.ModelSerializer):
-
-    class Meta:
-        model = Meeting
-        fields = ['id', 'title', 'start_time', 'end_time','creator']
-
 class CaptionSerializer(serializers.ModelSerializer):
+    
 
     class Meta:
         model = Caption
+        fields = '__all__'
+
+class MeetingSerializer(serializers.ModelSerializer):
+
+    caption = CaptionSerializer()
+
+    class Meta:
+        model = Meeting
         fields = '__all__'

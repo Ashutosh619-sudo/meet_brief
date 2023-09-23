@@ -14,7 +14,8 @@ class Caption(models.Model):
 
     meeting = models.OneToOneField(Meeting, on_delete=models.CASCADE, related_name="caption")
     timestamp = models.DateTimeField(auto_now_add=True)
-    url = models.TextField()
+    object_key = models.TextField()
+    file_name = models.TextField()
 
 
 class MeetingSummary(models.Model):
