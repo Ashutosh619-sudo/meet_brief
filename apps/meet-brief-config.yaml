@@ -5,6 +5,7 @@ metadata:
   labels:
     app: meet-brief-api-deployment
 spec:
+  replicas: 3
   selector:
     matchLabels:
       app: meet-brief-api-deployment
