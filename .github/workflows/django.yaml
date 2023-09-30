@@ -10,7 +10,7 @@ on:
 
 jobs:
     test_django_job:
-      uses: Ashutosh619-sudo/meet_brief/.github/workflows/test-django.yaml
+      uses: Ashutosh619-sudo/meet_brief/.github/workflows/test-django.yaml@master
     
     build:
       runs-on: ubuntu-latest
