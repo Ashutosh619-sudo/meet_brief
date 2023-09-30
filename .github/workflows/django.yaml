@@ -27,7 +27,7 @@ jobs:
         - name: Login in to DO Container Registery with short-lived creds
           run: doctl registry login --expiry-seconds 1200
         - name: Build Container Image
-          working-directory: ./meet_brief
+          working-directory: .
           run: |
             docker build -f Dockerfile \
             -t registry.digitalocean.com/meet-brief/meet-brief-api:latest \
