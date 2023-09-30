@@ -9,13 +9,13 @@ jobs:
     runs-on: ubuntu-latest
     defaults:
       run:
-        working-directory: ./meet_brief
+        working-directory: .
     env:
       DJANGO_SECRET_KEY: nfikanfklsanfklnsalkfasfnlsfbklbnkjl
       POSTGRES_DB: dockerdc
       POSTGRES_PASSWORD: mysecretpassword
       POSTGRES_USER: myuser
-      POSTGRES_HOST: localhost
+      POSTGRES_HOST: localhosts
       POSTGRES_PORT: 5432
       DB_IGNORE_SSL: "true"
     services:
