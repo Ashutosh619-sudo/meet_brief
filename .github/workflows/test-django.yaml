@@ -9,9 +9,9 @@ jobs:
     runs-on: ubuntu-latest
     defaults:
       run:
-        working-directory: ./web
+        working-directory: ./meet_brief
     env:
-      DJANGO_SECRET_KEY: test-key-not-good-maybe-make-one-better
+      DJANGO_SECRET_KEY: nfikanfklsanfklnsalkfasfnlsfbklbnkjl
       POSTGRES_DB: dockerdc
       POSTGRES_PASSWORD: mysecretpassword
       POSTGRES_USER: myuser
