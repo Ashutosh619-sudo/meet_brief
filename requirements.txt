@@ -3,3 +3,5 @@ djangorestframework
 psycopg2
 python-dotenv
 boto3
+gunicorn
+django-q
