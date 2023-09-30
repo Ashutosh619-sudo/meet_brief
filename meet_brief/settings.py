@@ -30,7 +30,7 @@ SECRET_KEY = os.environ['DJANGO_SECRET']
 # SECURITY WARNING: don't run with debug turned on in production!
 DEBUG = True
 
-ALLOWED_HOSTS = []
+ALLOWED_HOSTS = ['*']
 
 
 # Application definition
@@ -46,6 +46,7 @@ INSTALLED_APPS = [
     'rest_framework',
     'rest_framework.authtoken',
     'briefapp',
+    'django_q',
 ]
 
 MIDDLEWARE = [
@@ -93,6 +94,23 @@ DATABASES = {
     }
 }
 
+Q_CLUSTER = {
+    "name": "meet_brief",
+    "save_limit": 0,
+    "retry": 14400,
+    "timeout": 3600,
+    "catch_up": False,
+    "workers": 4,
+    "queue_limit": 2,
+    "cached": False,
+    "orm": "default",
+    "ack_failures": True,
+    "poll": 1,
+    "max_attempts": 1,
+    "attempt_count": 1,
+    "recycle": 50,
+    "max_rss": 100000
+}
 
 # Password validation
 # https://docs.djangoproject.com/en/4.2/ref/settings/#auth-password-validators
