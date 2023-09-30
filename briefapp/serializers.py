@@ -16,7 +16,7 @@ class CaptionSerializer(serializers.ModelSerializer):
 
 class MeetingSerializer(serializers.ModelSerializer):
 
-    caption = CaptionSerializer()
+    caption = CaptionSerializer(read_only=True, required=False)
 
     class Meta:
         model = Meeting
