@@ -42,6 +42,6 @@ class CustomTokenObtainPairView(ObtainAuthToken):
         if user:
             # If authentication is successful, generate and return the token
             token = Token.objects.get(user=user)
-            return Response({"token":token.key, "user_id": user.id})
+            return Response({"token":token.key, "user_id": user.id, "email": user.email})
         else:
             return Response({'detail': 'Unable to log in with provided credentials.'}, status=status.HTTP_401_UNAUTHORIZED)
