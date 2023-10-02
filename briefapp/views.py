@@ -8,6 +8,7 @@ from rest_framework import status
 from .serializers import FileUploadSerializer, CaptionSerializer
 import boto3
 import os
+import json
 
 from .models import Meeting, Caption
 from .serializers import MeetingSerializer
@@ -16,7 +17,6 @@ from .permissions import IsObjectCreator
 
 class Caption(generics.CreateAPIView):
 
-    parser_classes = (MultiPartParser,)
     authentication_classes = (TokenAuthentication,)
     permission_classes = [IsAuthenticated]
 
@@ -32,38 +32,38 @@ class Caption(generics.CreateAPIView):
 
     def post(self, request):
 
-        file_serializer = FileUploadSerializer(data=request.data)
-
-
         caption_data = {}
-        caption_data['meeting'] = request.data["meeting"]
+        file_name = request.data["file_name"]
+        conversation = request.data["conversation"]
+        caption_data["meeting"] = request.data["meeting"]
+        file_name = "{}.json".format(file_name)
 
-        if file_serializer.is_valid():
-
-            uploaded_file = request.FILES['file']
-
-            s3 = self._setup_boto()
-            
-            bucket_name = os.environ["AWS_BUCKET"]
-            path = str(request.user.id)
-
-            object_key  = path + '/' + uploaded_file.name
-
-            try:
-                s3.upload_fileobj(uploaded_file, bucket_name, object_key)
-                caption_data['object_key'] = object_key
-                caption_data['file_name'] = uploaded_file.name
-
-                serializer = CaptionSerializer(data=caption_data)
-                if serializer.is_valid(raise_exception=True):
-                    serializer.save()
-
-                return Response({'detail': 'File uploaded successfully.'}, status=status.HTTP_201_CREATED)
-            
-            except Exception as e:
-                return Response({'detail': 'Failed to upload the file to S3.', 'error': str(e)}, status=status.HTTP_500_INTERNAL_SERVER_ERROR)
+        s3 = self._setup_boto()
         
-        return Response(file_serializer.errors, status=status.HTTP_400_BAD_REQUEST)
+        bucket_name = os.environ["AWS_BUCKET"]
+        path = str(request.user.id)
+
+        object_key  = path + '/' + file_name
+
+        uploading_data = {
+            "conversation":conversation
+        }
+
+        json_data = json.dumps(uploading_data)
+
+        try:
+            s3.put_object(Bucket=bucket_name, Key=object_key, Body=json_data)
+            caption_data['object_key'] = object_key
+            caption_data['file_name'] = file_name
+
+            serializer = CaptionSerializer(data=caption_data)
+            if serializer.is_valid(raise_exception=True):
+                serializer.save()
+
+            return Response({'detail': 'File uploaded successfully.'}, status=status.HTTP_201_CREATED)
+        
+        except Exception as e:
+            return Response({'detail': 'Failed to upload the file to S3.', 'error': str(e)}, status=status.HTTP_500_INTERNAL_SERVER_ERROR)
 
 
 class MeetingsListCreate(generics.ListCreateAPIView):
