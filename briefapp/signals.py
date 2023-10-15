@@ -9,5 +9,5 @@ from .tasks import summarize_caption
 @receiver(post_save, sender=Caption)
 def run_post_caption_creation_triggers(sender, instance:Caption, **kwargs):
 
-    print(instance)
+
     async_task(summarize_caption, instance.id)
